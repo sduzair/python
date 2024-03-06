@@ -1,0 +1,39 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#92a80d",
+        "activityBar.background": "#92a80d",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#a6edf8",
+        "activityBarBadge.foreground": "#15202b",
+        "sash.hoverBorder": "#92a80d"
+    },
+    "peacock.color": "#697909",
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "modificationsIfAvailable",
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "always",
+            "source.organizeImports": "always"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff",
+    },
+    "notebook.formatOnSave.enabled": true,
+    "notebook.codeActionsOnSave": {
+        "notebook.source.fixAll": "explicit",
+        "notebook.source.organizeImports": "explicit"
+    },
+    "jupyter.themeMatplotlibPlots": true,
+    "jupyter.widgetScriptSources": [
+        "unpkg.com",
+        "jsdelivr.com"
+    ],
+    "files.exclude": {
+        "**/.csv": true,
+        "**/.parquet": true,
+        "**/.pkl": true,
+        "**/.xls": true
+    },
+    "notebook.output.scrolling": true,
+    "window.zoomLevel": 1
+}

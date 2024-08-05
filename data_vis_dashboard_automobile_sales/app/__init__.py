@@ -8,6 +8,7 @@ import plotly.express as px
 
 from config import Config
 
+
 def create_app(data: pd.DataFrame):
     # Initialize the Dash app
     app = dash.Dash(name=__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -36,13 +37,7 @@ def create_app(data: pd.DataFrame):
             dbc.Row(
                 [
                     html.H1(
-                        app.title,
-                        style={
-                            "textAlign": "left",
-                            "color": "#503D36",
-                            "font-size": 24,
-                            "text-align": "center",
-                        },
+                        app.title, className="text-center"
                     ),  # May include style for title
                 ]
             ),
@@ -87,9 +82,8 @@ def create_app(data: pd.DataFrame):
                 justify="center",
             ),
             # TASK 2.3: Add a division for output display
-            dbc.Container(id="output-container", className="chart-grid"),
-        ],
-        fluid=True,
+            dbc.Container(id="output-container", className="chart-grid mt-4"),
+        ]
     )
 
     # TASK 2.4: Creating Callbacks
@@ -125,12 +119,15 @@ def create_app(data: pd.DataFrame):
             sales_rec_by_year = (
                 recession_data.groupby("Year")["Automobile_Sales"].mean().reset_index()
             )
+
+            R_chart1_title = (
+                "Average automobile sales fluctuation over recession period"
+            )
             R_chart1 = dcc.Graph(
                 figure=px.line(
                     sales_rec_by_year,
                     x="Year",
                     y="Automobile_Sales",
-                    title="Average Automobile Sales fluctuation over Recession Period",
                 )
             )
 
@@ -141,19 +138,25 @@ def create_app(data: pd.DataFrame):
                 .mean()
                 .reset_index()
             )
+
+            R_chart2_title = "Average number of vehicles sold by vehicle type"
             R_chart2 = dcc.Graph(
                 figure=px.bar(
-                    data_frame=sales_rec_by_veh, x="Vehicle_Type", y="Automobile_Sales"
+                    data_frame=sales_rec_by_veh,
+                    x="Vehicle_Type",
+                    y="Automobile_Sales",
                 )
             )
 
-            # Plot 3 Pie chart for total expenditure share by vehicle type during recessions
+            # Plot 3 Pie chart for total expenditure share by vehicle type during recession
             # use groupby to create relevant data for plotting
             exp_rec_by_veh = (
                 recession_data.groupby("Vehicle_Type")["Advertising_Expenditure"]
                 .sum()
                 .reset_index()
             )
+
+            R_chart3_title = "Total expenditure share by vehicle type during recession"
             R_chart3 = dcc.Graph(
                 figure=px.pie(
                     data_frame=exp_rec_by_veh,
@@ -170,24 +173,31 @@ def create_app(data: pd.DataFrame):
                 .sum()
                 .reset_index()
             )
+
+            R_chart4_title = "Vehicle wise sales by unemployment rate during recession"
             R_chart4 = dcc.Graph(
                 figure=px.bar(
                     sales_rec_by_uemp_veh,
                     x="unemployment_rate",
                     y="Automobile_Sales",
                     color="Vehicle_Type",
-                    title="Vehicle-wise Sales by Unemployment Rate during Recessions",
                 )
             )
 
             return [
                 dbc.Row(
                     className="chart-item",
-                    children=[dbc.Col(children=R_chart1), dbc.Col(children=R_chart2)],
+                    children=[
+                        create_chart_container(R_chart1_title, R_chart1),
+                        create_chart_container(R_chart2_title, R_chart2),
+                    ],
                 ),
                 dbc.Row(
                     className="chart-item",
-                    children=[dbc.Col(children=R_chart3), dbc.Col(children=R_chart4)],
+                    children=[
+                        create_chart_container(R_chart3_title, R_chart3),
+                        create_chart_container(R_chart4_title, R_chart4),
+                    ],
                 ),
             ]
 
@@ -202,14 +212,30 @@ def create_app(data: pd.DataFrame):
 
             # plot 1 Yearly Automobile sales using line chart for the whole period.
             yas = data.groupby("Year")["Automobile_Sales"].mean().reset_index()
+
+            Y_chart1_title = (
+                "Yearly automobile sales using line chart for the whole period"
+            )
             Y_chart1 = dcc.Graph(
-                figure=px.line(data_frame=yas, x="Year", y="Automobile_Sales")
+                figure=px.line(
+                    data_frame=yas,
+                    x="Year",
+                    y="Automobile_Sales",
+                )
             )
 
             # Plot 2 Total Monthly Automobile sales using line chart.
             mas = yearly_data.groupby("Month")["Automobile_Sales"].sum().reset_index()
+
+            Y_chart2_title = "Total monthly automobile sales in the year {}".format(
+                input_year
+            )
             Y_chart2 = dcc.Graph(
-                figure=px.line(data_frame=mas, x="Month", y="Automobile_Sales")
+                figure=px.line(
+                    data_frame=mas,
+                    x="Month",
+                    y="Automobile_Sales",
+                )
             )
 
             # Plot bar chart for average number of vehicles sold during the given year
@@ -218,14 +244,17 @@ def create_app(data: pd.DataFrame):
                 .sum()
                 .reset_index()
             )
+
+            Y_chart3_title = (
+                "Average vehicles sold by vehicle type in the year {}".format(
+                    input_year
+                )
+            )
             Y_chart3 = dcc.Graph(
                 figure=px.bar(
                     data_frame=avr_vdata,
                     x="Vehicle_Type",
                     y="Automobile_Sales",
-                    title="Average Vehicles Sold by Vehicle Type in the year {}".format(
-                        input_year
-                    ),
                 )
             )
 
@@ -234,6 +263,10 @@ def create_app(data: pd.DataFrame):
                 yearly_data.groupby("Vehicle_Type")["Advertising_Expenditure"]
                 .sum()
                 .reset_index()
+            )
+
+            Y_chart4_title = "Advertisement expenditure for each vehicle in the year {}".format(
+                input_year
             )
             Y_chart4 = dcc.Graph(
                 figure=px.pie(
@@ -251,11 +284,17 @@ def create_app(data: pd.DataFrame):
             return [
                 dbc.Row(
                     className="chart-item",
-                    children=[dbc.Col(children=Y_chart1), dbc.Col(children=Y_chart2)],
+                    children=[
+                        create_chart_container(Y_chart1_title, Y_chart1),
+                        create_chart_container(Y_chart2_title, Y_chart2),
+                    ],
                 ),
                 dbc.Row(
                     className="chart-item",
-                    children=[dbc.Col(children=Y_chart3), dbc.Col(children=Y_chart4)],
+                    children=[
+                        create_chart_container(Y_chart3_title, Y_chart3),
+                        create_chart_container(Y_chart4_title, Y_chart4),
+                    ],
                 ),
             ]
 
@@ -264,3 +303,14 @@ def create_app(data: pd.DataFrame):
 
     return app
 
+
+def create_chart_container(title, chart):
+    return dbc.Col(
+        [
+            dbc.Row(html.H4(title, className="text-center")),
+            dbc.Row(chart),
+        ],
+        xs=12,
+        lg=6,
+        className="mb-4",
+    )
